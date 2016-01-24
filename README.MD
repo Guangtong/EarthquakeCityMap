@@ -14,4 +14,4 @@
   * The text label of a marker is displayed on top in hovering event
   * Keyborad filter for earthquakes in different ages (With indicators under the key area)
   * Heatmap of earthquakes
-  * Map canvas size can change according to the window, but fix when zooming the map. 
+  * Map canvas size can change according to the window, but keep fixed when zooming the map. 
