@@ -1,7 +1,7 @@
 # UCSDEarthquakeCityMap
 ## Background
 * This is the homework of Coursera Course: Object Oriented Programming in Java from UCSD
-* Module 1 to 5 are solutions to homework assignment 
+* Module 1 to 5 are my solutions to homework assignment 
   * Earthquakes and cities are drawn aas markers on the map
   * The applet extends "PApplet" class provided by "Processing" 
   * The map and markers are drawn using UnfoldingMaps package
