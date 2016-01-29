@@ -1,8 +1,17 @@
 package module6;
 
+import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.PointFeature;
+import de.fhpotsdam.unfolding.geo.Location;
+import de.fhpotsdam.unfolding.marker.Marker;
+import de.fhpotsdam.unfolding.marker.SimplePointMarker;
+import de.fhpotsdam.unfolding.utils.GeoUtils;
+import de.fhpotsdam.unfolding.utils.ScreenPosition;
+import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PVector;;
+
 
 /** Implements a visual marker for earthquakes on an earthquake map
  * 
@@ -15,7 +24,7 @@ public abstract class EarthquakeMarker extends CommonMarker implements Comparabl
 	
 	// Did the earthquake occur on land?  This will be set by the subclasses.
 	protected boolean isOnLand;
-
+	
 	// The radius of the Earthquake marker
 	// You will want to set this in the constructor, either
 	// using the thresholds below, or a continuous function
@@ -81,6 +90,13 @@ public abstract class EarthquakeMarker extends CommonMarker implements Comparabl
 		// call abstract method implemented in child class to draw marker shape
 		drawEarthquake(pg, x, y);
 		
+		if(getClicked())
+		{
+			float d = 2 * threatCircleRadius();
+			pg.noFill();
+			pg.ellipse(x,y,d,d);
+		}
+		
 		// IMPLEMENT: add X over marker if within past day		
 		String age = getStringProperty("age");
 		if ("Past Hour".equals(age) || "Past Day".equals(age)) {
@@ -132,11 +148,13 @@ public abstract class EarthquakeMarker extends CommonMarker implements Comparabl
 	 *  only and is not intended to be used for safety-critical 
 	 *  or predictive applications.
 	 */
-	public double threatCircle() {	
-		double miles = 20.0f * Math.pow(1.8, 2*getMagnitude()-5);
-		double km = (miles * kmPerMile);
+	public float threatCircle() {	
+		float miles = (float) (20.0f * Math.pow(1.8, 2*getMagnitude()-5));
+		float km = (miles * kmPerMile);
 		return km;
 	}
+	
+
 	
 	// determine color of marker from depth
 	// We use: Deep = red, intermediate = blue, shallow = yellow
@@ -190,6 +208,22 @@ public abstract class EarthquakeMarker extends CommonMarker implements Comparabl
 	}
 	
 
-	
+	public float threatCircleRadius() {
+		
+		float radius = 0;
+		
+		Location centerLocation = this.getLocation();
+		Location upperLocation = GeoUtils.getDestinationLocation(centerLocation, 0, threatCircle());
+//		SimplePointMarker upperMarker = new SimplePointMarker(upperLocation);
+//		map.addMarker(upperMarker);
+		
+		ScreenPosition center = map.getScreenPosition(centerLocation);
+		ScreenPosition upper = map.getScreenPosition(upperLocation);
+		radius = PApplet.dist(center.x, center.y, upper.x, upper.y);		
+		
+		return radius;
+	}
+
+
 	
 }

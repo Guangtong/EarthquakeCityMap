@@ -1,6 +1,7 @@
 package module6;
 
 
+import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.geo.Location;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
 import processing.core.PGraphics;
@@ -14,6 +15,7 @@ public abstract class CommonMarker extends SimplePointMarker {
 
 	// Records whether this marker has been clicked (most recently)
 	protected boolean clicked = false;
+	protected UnfoldingMap map;
 	
 	public CommonMarker(Location location) {
 		super(location);
@@ -49,4 +51,11 @@ public abstract class CommonMarker extends SimplePointMarker {
 	}
 	public abstract void drawMarker(PGraphics pg, float x, float y);
 	public abstract void showTitle(PGraphics pg, float x, float y);
+	
+	public void sendMapHandler(UnfoldingMap map) {
+		this.map = map;
+	}
+	public void clearMapHandler() {
+		this.map = null;
+	}
 }
