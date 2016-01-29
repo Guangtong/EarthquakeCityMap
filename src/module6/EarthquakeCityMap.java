@@ -15,6 +15,7 @@ import de.fhpotsdam.unfolding.marker.AbstractShapeMarker;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.MarkerManager;
 import de.fhpotsdam.unfolding.marker.MultiMarker;
+import de.fhpotsdam.unfolding.marker.SimplePointMarker;
 import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
 import de.fhpotsdam.unfolding.utils.MapUtils;
@@ -71,7 +72,7 @@ public class EarthquakeCityMap extends PApplet {
 	public void setup() {		
 		// (1) Initializing canvas and map tiles
 		//size(900, 700, OPENGL);
-		size(900, 700, P3D);
+		size(900, 700, P2D);//by P2D the text ontop problem is solved, why?
 		
 		if (offline) {
 		    map = new UnfoldingMap(this, 200, 50, 650, 600, new MBTilesMapProvider(mbTilesString));
@@ -136,20 +137,24 @@ public class EarthquakeCityMap extends PApplet {
 	    //NOTE: defaultMarker is added automatically if no marker already exist
 	    //DIY MarkerManager should be added at last.
 	    map.addMarkerManager(new MarkerManager<Marker>());
-	    
+	    SimplePointMarker testMarker = new SimplePointMarker();
+	    testMarker.setLocation(40.44f, -86.91f);	//lat lon
+	    map.getMarkerManager(1).addMarker(testMarker);
+	    	    
 	    // sort and print
 	    sortAndPrint(50);
 	    
 //	    noLoop();
 //	    redraw();
-	    frameRate(1);
+//	    frameRate(20);
 
 	}  // End setup
 
 	public void draw() {
 		background(0);
 		map.draw();
-		map.getMarkerManager(1).draw();
+		//map.getMarkerManager(1).draw();
+		//the drawing of self created MarkerManager is called automatically
 	    addKey();
 		
 	}
