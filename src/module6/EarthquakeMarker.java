@@ -90,7 +90,7 @@ public abstract class EarthquakeMarker extends CommonMarker implements Comparabl
 		// call abstract method implemented in child class to draw marker shape
 		drawEarthquake(pg, x, y);
 		
-		if(getClicked())
+		if(getClicked()||isSelected())
 		{
 			float d = 2 * threatCircleRadius();
 			pg.noFill();

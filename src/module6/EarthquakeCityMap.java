@@ -134,11 +134,18 @@ public class EarthquakeCityMap extends PApplet {
 	    map.addMarkers(quakeMarkers);
 	    map.addMarkers(cityMarkers);
 	    
+	    for(Marker m: map.getMarkers())
+	    {
+	    	((CommonMarker)m).sendMapHandler(map);
+	    }
+	    
 	    //NOTE: defaultMarker is added automatically if no marker already exist
 	    //DIY MarkerManager should be added at last.
 	    map.addMarkerManager(new MarkerManager<Marker>());
+	    
+	    //This is a test to show that self-created MarkerManager will be drawn automatically
 	    SimplePointMarker testMarker = new SimplePointMarker();
-	    testMarker.setLocation(40.44f, -86.91f);	//lat lon
+	    testMarker.setLocation(40.44f, -86.91f);	//lat lon of west lafayette
 	    map.getMarkerManager(1).addMarker(testMarker);
 	    	    
 	    // sort and print
@@ -221,11 +228,15 @@ public class EarthquakeCityMap extends PApplet {
 		if (lastSelected != null) {
 			return;
 		}
-		
+
 		for (Marker m : markers) 
 		{
 			CommonMarker marker = (CommonMarker)m;
 			if (marker.isInside(map,  mouseX, mouseY)) {
+				if(marker.isSelected()) {
+					return; //it is selected by click quake or city, will not be regarded as mouse select
+				}
+				
 				lastSelected = marker;
 				marker.setSelected(true);
 				map.getMarkerManager(1).addMarker(lastSelected);
@@ -244,8 +255,8 @@ public class EarthquakeCityMap extends PApplet {
 	{
 		if (lastClicked != null) {
 			unhideMarkers();
+			map.getMarkerManager(1).clearMarkers();
 			lastClicked.setClicked(false);
-			lastClicked.clearMapHandler();
 			lastClicked = null;
 			
 		}
@@ -274,7 +285,7 @@ public class EarthquakeCityMap extends PApplet {
 			if (!marker.isHidden() && marker.isInside(map, mouseX, mouseY)) {
 				lastClicked = (CommonMarker)marker;
 				lastClicked.setClicked(true);
-				lastClicked.sendMapHandler(map);
+				
 				
 				// Hide all the other cities and hide earthquakes
 				for (Marker mhide : cityMarkers) {
@@ -287,6 +298,10 @@ public class EarthquakeCityMap extends PApplet {
 					if (quakeMarker.getDistanceTo(marker.getLocation()) 
 							> quakeMarker.threatCircle()) {
 						quakeMarker.setHidden(true);
+					}
+					else {
+						quakeMarker.setSelected(true); //select affecting quakes to show their threatcircle and label
+						map.getMarkerManager(1).addMarker(quakeMarker);
 					}
 				}
 				return;
@@ -305,8 +320,7 @@ public class EarthquakeCityMap extends PApplet {
 			if (!marker.isHidden() && marker.isInside(map, mouseX, mouseY)) {
 				lastClicked = marker;
 				lastClicked.setClicked(true);
-				lastClicked.sendMapHandler(map);
-				
+								
 				// Hide all the other earthquakes and hide cities
 				for (Marker mhide : quakeMarkers) {
 					if (mhide != lastClicked) {
@@ -319,6 +333,10 @@ public class EarthquakeCityMap extends PApplet {
 							> marker.threatCircle()) {
 						mhide.setHidden(true);
 					}
+					else {
+						mhide.setSelected(true);
+						map.getMarkerManager(1).addMarker(mhide);
+					}
 				}
 				return;
 			}
@@ -329,10 +347,12 @@ public class EarthquakeCityMap extends PApplet {
 	private void unhideMarkers() {
 		for(Marker marker : quakeMarkers) {
 			marker.setHidden(false);
+			marker.setSelected(false);
 		}
 			
 		for(Marker marker : cityMarkers) {
 			marker.setHidden(false);
+			marker.setSelected(false);
 		}
 	}
 	
