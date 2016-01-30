@@ -24,6 +24,7 @@ public abstract class EarthquakeMarker extends CommonMarker implements Comparabl
 	
 	// Did the earthquake occur on land?  This will be set by the subclasses.
 	protected boolean isOnLand;
+	protected boolean isFiltered;
 	
 	// The radius of the Earthquake marker
 	// You will want to set this in the constructor, either
@@ -207,8 +208,24 @@ public abstract class EarthquakeMarker extends CommonMarker implements Comparabl
 		return isOnLand;
 	}
 	
+	public boolean isFiltered() //filtered items will not show
+	{
+		return isFiltered;
+	}
+	
+	public void filterQuakeMag(float mag) //filter quakes < mag
+	{
+		if(getMagnitude() <mag){
+			isFiltered = true;
+			setHidden(true);
+		}
+		else{
+			isFiltered = false;
+			setHidden(false);
+		}
+	}
 
-	public float threatCircleRadius() {
+	private float threatCircleRadius() {
 		
 		float radius = 0;
 		

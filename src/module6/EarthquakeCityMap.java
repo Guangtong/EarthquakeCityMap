@@ -68,6 +68,8 @@ public class EarthquakeCityMap extends PApplet {
 	// NEW IN MODULE 5
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
+
+	private int filterLevel;
 	
 	public void setup() {		
 		// (1) Initializing canvas and map tiles
@@ -346,6 +348,8 @@ public class EarthquakeCityMap extends PApplet {
 	// loop over and unhide all markers
 	private void unhideMarkers() {
 		for(Marker marker : quakeMarkers) {
+			if(((EarthquakeMarker)marker).isFiltered()) 
+				continue;
 			marker.setHidden(false);
 			marker.setSelected(false);
 		}
@@ -356,6 +360,29 @@ public class EarthquakeCityMap extends PApplet {
 		}
 	}
 	
+	
+	private void filterMag(float mag){
+		for(Marker m : quakeMarkers) // all quakeMarkers less than mag will be filtered out
+		{
+			((EarthquakeMarker)m).filterQuakeMag(mag);
+		}
+	}
+	
+	@Override
+	public void keyPressed(){
+		int mag = (int)(key)-(int)('0');
+		if(mag>=0 && mag <=9) // means a number is pressed
+		{
+			filterMag(mag); // isFiltered and isHidden
+			filterLevel = mag;
+		}
+		
+		
+		
+	}
+	
+	
+	
 	// helper method to draw key in GUI
 	private void addKey() {	
 		// Remember you can use Processing's graphics methods here
@@ -364,7 +391,7 @@ public class EarthquakeCityMap extends PApplet {
 		int xbase = 25;
 		int ybase = 50;
 		
-		rect(xbase, ybase, 150, 250);
+		rect(xbase, ybase, 150, 300);
 		
 		fill(0);
 		textAlign(LEFT, CENTER);
@@ -407,6 +434,8 @@ public class EarthquakeCityMap extends PApplet {
 		text("Deep", xbase+50, ybase+190);
 
 		text("Past hour", xbase+50, ybase+210);
+		text("Earthquake Filter :", xbase+20, ybase+250);
+		text(">"+filterLevel, xbase+60, ybase+270);
 		
 		fill(255, 255, 255);
 		int centerx = xbase+35;
@@ -417,6 +446,7 @@ public class EarthquakeCityMap extends PApplet {
 		line(centerx-8, centery-8, centerx+8, centery+8);
 		line(centerx-8, centery+8, centerx+8, centery-8);
 		
+
 		
 	}
 
